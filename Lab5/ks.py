@@ -22,7 +22,6 @@ def get_neighbours(self):
 
 
     n = [deepcopy(self.representation) for i in range(len(self.representation))]
-
     for count, i in enumerate(n):
         if i[count] == 1:
             i[count] = 0

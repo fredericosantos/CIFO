@@ -1,25 +1,25 @@
 from main import Individual
-from tsp_data import distance_matrix
+from ks_data import weights, values, capacity
 import numpy as np
 
 
-def getFitness(individual: Individual, search_space: list):
+def getFitness(individual: Individual):
     """Calculate individual fitness and update the individual's fitness.
 
     Args:
         individual (Individual): initiated individual class
-        search_space (list): Search space (distance matrix)
     """
     # simplify code
     rep = individual.representation
     # calculate fitness
-    fitness = [search_space[rep[i - 1]][rep[i]] for i, _ in enumerate(rep)]
-    # update individual's fitness
-    individual.fitness = sum(fitness)
-
+    individual.weight = sum(rep * np.array(weights))
+    if individual.weight > capacity:
+        individual.fitness = capacity - individual.weight
+    else:
+        individual.fitness = sum(rep * np.array(values))
 
 def getNeighbours(individual: Individual):
-    """Generate neighbors of individual by swapping each node pair.
+    """Generate neighbors of individual by swapping one bit at a time in each position
 
     Args:
         individual (Individual): individual to which we update the neighbors
@@ -27,8 +27,8 @@ def getNeighbours(individual: Individual):
     rep = individual.representation
     neighbours = [rep.copy() for _ in enumerate(rep[:-1])]
     for i, indv in enumerate(neighbours):
-        indv[i], indv[i + 1] = indv[i + 1], indv[i]
-    individual.neighbours = [Individual(n) for n in neighbours]
+        ind[i] ^= 1
+    individual.neighbours = neighbours
 
 
 if __name__ == "__main__":

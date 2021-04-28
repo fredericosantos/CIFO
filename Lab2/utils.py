@@ -1,4 +1,3 @@
-import seaborn as sns
 import matplotlib.pyplot as plt
 
 
@@ -30,8 +29,3 @@ def get_neighbours(individual):
     n1 = individual - 1
     n2 = individual + 1
     return [n1, n2]
-
-
-def plot(values):
-    sns.lineplot(data=values)
-    plt.show()

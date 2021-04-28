@@ -1,9 +1,9 @@
-'''
+"""
 base 10: 1 to 15
 base 2: 0010 to 1111
 fitness: sum of numbers in base 2
 
-'''
+"""
 import random
 import utils
 
@@ -12,6 +12,7 @@ bin_set = [i for i in range(1, 60)]
 
 def eval(value):
     return utils.evaluate(value)
+
 
 def hillClimb(search_space):
     # random solution
@@ -28,7 +29,3 @@ def hillClimb(search_space):
         if not better_optimum:
             return local_optimum
 
-
-def hill_climb(search_space):
-    pass
-    

@@ -1,4 +1,4 @@
-import random
+import random, math
 from main import Population, Individual
 
 
@@ -13,39 +13,22 @@ def simulated_annealing(
 
     # random solution
     ind = random.choice(pop.individuals)
-    previous_ind = ind
 
     # invert fitness if minimizing
     m = -1 if pop.optimization == "min" else 1
-    visited = {}
     getFitness(ind)
 
-    while True:
-        if ind.representation in visited.keys():
-            ind = visited[ind.representation]
-            ind.number_n_visited += 1
-            if ind.number_n_visited == ind.len_max:
-                return ind
-        else:
+    while c > 0.05:
+        for _ in range(L):
             getNeighbours(ind)
-            for n in ind.neighbours:
-                getFitness(n)
-            # Calculate fitness of neighbours given optimization type by m
-            ns_fitness = ([n.fitness for n in ind.neighbours] * np.array(m)).tolist()
-            # How many neighbours have the best fitness
-            ind.len_max = sum((np.array(ns_fitness) == max(ns_fitness)))
-            ind.number_n_visited = 0
+            rnd_n = random.choice(ind.neighbours)
+            if rnd_n.fitness * m >= ind.fitness * m:
+                ind = rnd_n
+            else:
+                p = random.uniform(0, 1)
+                pc = math.exp(-abs(rnd_n.fitness * m - ind.fitness * m) / c)
+                if p < pc:
+                    ind = rnd_n
+        c *= alpha
+    return ind
 
-        # Get best neighbour
-        best_n_idx = ns_fitness.index(max(ns_fitness))
-        best_n = ind.neighbours[best_n_idx]
-
-        if best_n.fitness * m > ind.fitness * m:
-            visited = {}
-            ind = best_n
-
-        elif best_n.fitness == ind.fitness:
-            # Change the best neighbour's fitness value to never be max again
-            ind.neighbours[best_n_idx].fitness -= 1 * m
-            visited[ind.representation] = ind
-            ind = best_n

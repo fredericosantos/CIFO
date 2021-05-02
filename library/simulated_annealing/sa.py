@@ -31,4 +31,3 @@ def simulated_annealing(
                     ind = rnd_n
         c *= alpha
     return ind
-

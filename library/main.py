@@ -5,6 +5,7 @@ class Population:
     def __init__(self, individuals: list, optimization: "min / max") -> None:
         self.individuals = individuals
         self.optimization = optimization.lower()
+        self.replacement
         if self.optimization not in ["min", "max"]:
             raise ValueError("Set optimization to min or max.")
 
@@ -26,3 +27,7 @@ class Individual:
         self.representation = representation
         self.fitness = None
         self.neighbours = None
+
+# TODO create function that generates a population with abstract code
+def generatePopulation():
+    pass

@@ -1,5 +1,6 @@
-import random
+import random, copy
 from main import Population, Individual
+import numpy as np
 
 
 def hill_climb(
@@ -25,13 +26,18 @@ def hill_climb(
     getFitness(ind)
 
     while True:
-        if ind.representation in visited.keys():
-            ind = visited[ind.representation]
+        print(f"{ind.representation = }")
+        ind_representation_str = "".join([str(i) for i in ind.representation])
+        if ind_representation_str in visited.keys():
+            ind = copy.deepcopy(visited[ind_representation_str])
             ind.number_n_visited += 1
             if ind.number_n_visited == ind.len_max:
+                print("reached maximum neighbours visited in plateau")
                 return ind
         else:
+            print("getting neighbours")
             getNeighbours(ind)
+            print("getting neighbours fitness")
             for n in ind.neighbours:
                 getFitness(n)
             # Calculate fitness of neighbours given optimization type by m
@@ -43,13 +49,16 @@ def hill_climb(
         # Get best neighbour
         best_n_idx = ns_fitness.index(max(ns_fitness))
         best_n = ind.neighbours[best_n_idx]
-
+        print(f"{m = }\n{best_n.fitness = }\n{ind.fitness = }")
         if best_n.fitness * m > ind.fitness * m:
             visited = {}
-            ind = best_n
+            ind = copy.deepcopy(best_n)
 
         elif best_n.fitness == ind.fitness:
+            print(f"found plateau on {best_n.representation}")
             # Change the best neighbour's fitness value to never be max again
             ind.neighbours[best_n_idx].fitness -= 1 * m
-            visited[ind.representation] = ind
-            ind = best_n
+            visited[ind_representation_str] = ind
+            ind = copy.deepcopy(best_n)
+        else:
+            return ind

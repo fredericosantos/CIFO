@@ -26,7 +26,7 @@ def getNeighbours(individual: Individual):
     """
     rep = individual.representation
     neighbours = [rep.copy() for _ in enumerate(rep[:-1])]
-    for i, indv in enumerate(neighbours):
+    for i, ind in enumerate(neighbours):
         ind[i] ^= 1
     individual.neighbours = neighbours
 

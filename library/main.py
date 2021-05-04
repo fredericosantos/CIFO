@@ -2,10 +2,10 @@ import numpy as np
 
 
 class Population:
-    def __init__(self, individuals: list, optimization: "min / max") -> None:
+    def __init__(self, individuals: list, optimization: "min / max"):
         self.individuals = individuals
         self.optimization = optimization.lower()
-        self.replacement
+        # self.replacement = replacement
         if self.optimization not in ["min", "max"]:
             raise ValueError("Set optimization to min or max.")
 
@@ -28,6 +28,11 @@ class Individual:
         self.fitness = None
         self.neighbours = None
 
+    def __len__(self):
+        return len(self.representation)
+    def __repr__(self):
+        return f"Individual <{self.fitness}>"
+
 # TODO create function that generates a population with abstract code
-def generatePopulation():
+def generatePopulation() -> Population:
     pass

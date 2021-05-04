@@ -1,4 +1,4 @@
-import random, math
+import random, math, copy
 from main import Population, Individual
 
 
@@ -22,12 +22,13 @@ def simulated_annealing(
         for _ in range(L):
             getNeighbours(ind)
             rnd_n = random.choice(ind.neighbours)
+            getFitness(rnd_n)
             if rnd_n.fitness * m >= ind.fitness * m:
-                ind = rnd_n
+                ind = copy.deepcopy(rnd_n)
             else:
                 p = random.uniform(0, 1)
                 pc = math.exp(-abs(rnd_n.fitness * m - ind.fitness * m) / c)
                 if p < pc:
-                    ind = rnd_n
+                    ind = copy.deepcopy(rnd_n)
         c *= alpha
     return ind

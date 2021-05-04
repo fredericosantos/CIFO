@@ -28,7 +28,7 @@ def getNeighbours(individual: Individual):
     neighbours = [rep.copy() for _ in enumerate(rep[:-1])]
     for i, ind in enumerate(neighbours):
         ind[i] ^= 1
-    individual.neighbours = neighbours
+    individual.neighbours = [Individual(n) for n in neighbours]
 
 
 if __name__ == "__main__":

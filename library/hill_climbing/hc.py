@@ -24,20 +24,20 @@ def hill_climb(
     m = -1 if pop.optimization == "min" else 1
     visited = {}
     getFitness(ind)
-
     while True:
-        print(f"{ind.representation = }")
+        print()
+        print(f"{ind.fitness = }")
         ind_representation_str = "".join([str(i) for i in ind.representation])
         if ind_representation_str in visited.keys():
+            print(f"{ind_representation_str = } found in visited individuals")
             ind = copy.deepcopy(visited[ind_representation_str])
             ind.number_n_visited += 1
             if ind.number_n_visited == ind.len_max:
-                print("reached maximum neighbours visited in plateau")
+                print("maximum neighbours visited in plateau")
                 return ind
         else:
-            print("getting neighbours")
+            print(f"{ind_representation_str = }")
             getNeighbours(ind)
-            print("getting neighbours fitness")
             for n in ind.neighbours:
                 getFitness(n)
             # Calculate fitness of neighbours given optimization type by m
@@ -49,8 +49,13 @@ def hill_climb(
         # Get best neighbour
         best_n_idx = ns_fitness.index(max(ns_fitness))
         best_n = ind.neighbours[best_n_idx]
-        print(f"{m = }\n{best_n.fitness = }\n{ind.fitness = }")
-        if best_n.fitness * m > ind.fitness * m:
+        # print(f"{m = } // {best_n.fitness = } // {ind.fitness = }")
+        print(
+            f"{best_n.fitness = } ;; {ind.fitness = } ;; diff = {ind.fitness - best_n.fitness}"
+        )
+        if (best_n.fitness * m) > (ind.fitness * m):
+            # if (ind.fitness - best_n.fitness) * m < 0:
+            print(f"{(best_n.fitness * m) = } > {(ind.fitness * m) = }")
             visited = {}
             ind = copy.deepcopy(best_n)
 

@@ -1,25 +1,37 @@
 import random, copy
-from main import Population, Individual
 import numpy as np
 
 
 # Should return representation of individual
 
-def fps(pop: Population) -> list:
-    m = -1 if pop.optimization == "min" else 1
-
+def fps(pop) -> list:
     # If the fitness is negative, return fitness = 0
     # Make sure the fitness number works in positive numbers
-    total_fitness = sum([i.fitness if i.fitness > 0 else 0 for i in pop.individuals]) * m
+    fitArray = np.array([i.fitness for i in pop.individuals])
+    fitArray = fitArray/sum(fitArray.clip(min=0))
+    fitArray = fitArray.clip(min=fitArray[fitArray > 0].min() / 2)
+    fitArray /= sum(fitArray)
 
+    if pop.optimization == "min":
+        fitArray = (1 - fitArray/sum(fitArray))
+        fitArray /= sum(fitArray)
     # Make a weighted choice
-    choice = np.random.choice([i for i, _ in enumerate(pop.individuals)], p=a/sum(a))
+    choice = np.random.choice(pop.individuals, p=fitArray)
     # return the representation of the individual
-    return pop.individuals[choice].representation
+    return choice.representation
 
-def tournament(pop: Population, size: int):
-    tournament = random.sample(pop.individuals, size=size)
+def tournament(pop, size: int) -> list:
+    """Tournament selection
+
+    Args:
+        pop (BasePopulation): Population
+        size (int): size of tournament
+
+    Returns:
+        [list]: Individual representation
+    """
+    players = random.sample(pop.individuals, size)
     m = -1 if pop.optimization == "min" else 1
-    winner = sorted(pop.individuals, key= lambda i: i.fitness * m)[0]
+    winner = sorted(players, key= lambda i: i.fitness * m)[-1]
     # return the representation of the individual
     return winner.representation

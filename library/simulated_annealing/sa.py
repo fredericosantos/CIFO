@@ -1,11 +1,9 @@
 import random, math, copy
-from main import Population, Individual
+from main import BasePopulation, Individual
 
 
 def simulated_annealing(
-    pop: Population,
-    getFitness: "function",
-    getNeighbours: "function",
+    pop: BasePopulation,
     L: int = 20,
     c: int = 10,
     alpha: float = 0.95,
@@ -16,13 +14,13 @@ def simulated_annealing(
 
         # invert fitness if minimizing
         m = -1 if pop.optimization == "min" else 1
-        getFitness(ind)
+        pop.fitness(ind)
         c_ = c
         while c_ > 0.05:
             for _ in range(L):
-                getNeighbours(ind)
+                pop.neighbours(ind)
                 rnd_n = random.choice(ind.neighbours)
-                getFitness(rnd_n)
+                pop.fitness(rnd_n)
                 if rnd_n.fitness * m >= ind.fitness * m:
                     ind = copy.deepcopy(rnd_n)
                 else:

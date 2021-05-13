@@ -13,7 +13,7 @@ def template_mutation(individual):
 
 
 def binary_mutation(individual):
-    """Binary muation for a GA individual
+    """Binary muttion for a GA individual
 
     Args:
         individual (Individual): A GA individual from charles libray.py

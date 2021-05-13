@@ -4,12 +4,10 @@ import numpy as np
 
 
 def GAO(
-    pop: Population, generations: int, select, crossover, mutation, getFitness
+    pop: Population, generations: int, select, crossover, mutation
 ) -> Individual:
-    # Check if individuals have fitness
-    if not pop.individuals[0].fitness:
-        for i in pop.individuals:
-            getFitness(i)
+    for i in pop.individuals:
+        pop.fitness(i)
     # Check if we want elitism and how many elites we keep
     if (pop.n_elites > 0):
         pop_prime = sorted(pop.individuals, key= lambda i: i.fitness)[:pop.n_elites]
@@ -29,7 +27,7 @@ def GAO(
             i = mutate(i)
             # Create individual and get its fitness
             i = Individual(representation=i)
-            getFitness(i)
+            pop.fitness(i)
         
         new_pop.append(i1)
         if len(new_pop) < len(pop):

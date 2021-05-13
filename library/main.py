@@ -1,11 +1,11 @@
 import numpy as np
 
 
-class Population:
+class BasePopulation:
     """Population for optimization
     """
 
-    def __init__(self, individuals: list, optimization: str, n_elites: int = 0):
+    def __init__(self, individuals: list, optimization: str, n_elites: int = 0, valid_set: list = None):
         """Args:
             individuals (list): List of Individual
             optimization (str): max or min
@@ -17,10 +17,17 @@ class Population:
         self.individuals = individuals
         self.optimization = optimization.lower()
         self.n_elites = n_elites
+        self.valid_set = valid_set
         if n_elites > 0:
             self.elites = []
         if self.optimization not in ["min", "max"]:
             raise ValueError("Set optimization to min or max.")
+
+    def fitness(self):
+        pass
+
+    def neighbours(self):
+        pass
 
     def selection(self, func, *args, **kwargs) -> None:
         func(self, *args, **kwargs)
@@ -49,5 +56,5 @@ class Individual:
 
 
 # TODO create function that generates a population with abstract code
-def generatePopulation() -> Population:
+def generatePopulation() -> BasePopulation:
     pass

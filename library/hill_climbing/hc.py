@@ -1,21 +1,18 @@
 import random, copy
-from main import Population, Individual
+from main import BasePopulation, Individual
 import numpy as np
 
 
 def hill_climb(
-    pop: Population,
-    getFitness: "function",
-    getNeighbours: "function",
+    pop: BasePopulation,
     verbose: bool = False,
+    hardstop: int = 100,
 ) -> Individual:
     """Hill Climb on a population of individuals by giving the function and
     fitness function and a function to get neighbours. Return the best individual.
 
     Args:
-        pop (Population): Population to hill climb
-        getFitness (function): function to get fitness of an individual
-        getNeighbours (function): function to get neighbours of an individual
+        pop (BasePopulation): Population to hill climb
 
     Returns:
         Individual: Return the best individual found
@@ -28,8 +25,9 @@ def hill_climb(
         # invert fitness if minimizing
         m = -1 if pop.optimization == "min" else 1
         visited = {}
-        getFitness(ind)
+        hardstop_counter = 0
         while True:
+            pop.fitness(ind)
             if verbose:
                 print()
             if verbose:
@@ -46,12 +44,17 @@ def hill_climb(
                     # return ind
                     pop.individuals[i] = copy.deepcopy(ind)
                     break
+                ns_fitness = (
+                    [n.fitness for n in ind.neighbours] * np.array(m)
+                ).tolist()
+                if verbose:
+                    print(f"{ind.len_max = }, {ind.number_n_visited = }")
             else:
                 if verbose:
                     print(f"{ind_representation_str = }")
-                getNeighbours(ind)
+                pop.neighbours(ind)
                 for n in ind.neighbours:
-                    getFitness(n)
+                    pop.fitness(n)
                 # Calculate fitness of neighbours given optimization type by m
                 ns_fitness = (
                     [n.fitness for n in ind.neighbours] * np.array(m)
@@ -59,6 +62,8 @@ def hill_climb(
                 # How many neighbours have the best fitness
                 ind.len_max = sum((np.array(ns_fitness) == max(ns_fitness)))
                 ind.number_n_visited = 0
+                if verbose:
+                    print(f"{ind.len_max = }, {ind.number_n_visited = }")
 
             # Get best neighbour
             best_n_idx = ns_fitness.index(max(ns_fitness))
@@ -74,15 +79,21 @@ def hill_climb(
                 ind = copy.deepcopy(best_n)
 
             elif best_n.fitness == ind.fitness:
+                if hardstop_counter == hardstop:
+                    pop.individuals[i] = copy.deepcopy(ind)
+                    break
+                else:
+                    hardstop_counter += 1
                 if verbose:
-                    print(f"found plateau on {best_n.representation}")
-                # Change the best neighbour's fitness value to never be max again
+                    print(f"Found plateau on {best_n.representation} and {ind.representation}")
+                # Change the best neighbour's fitness value to never be max/min again
                 ind.neighbours[best_n_idx].fitness -= 1 * m
-                visited[ind_representation_str] = ind
+                visited[ind_representation_str] = copy.deepcopy(ind)
                 ind = copy.deepcopy(best_n)
             else:
+                if verbose:
+                    print(f"No better individuals found.")
                 pop.individuals[i] = copy.deepcopy(ind)
                 break
-                # return ind
     if pop.n_elites > 0:
         pop.elites = sorted(pop.individuals, key= lambda i: i.fitness)[:pop.n_elites]

@@ -1,7 +1,4 @@
-import random, copy
-from main import Individual
-import numpy as np
-
+import random
 
 def gene_mutation(representation: list, p_mutation: float, valid_set: list) -> list:
     for i, gene in enumerate(representation):
@@ -27,5 +24,10 @@ def swap_mutation(representation: list, p_mutation: float, n_mutations: int) -> 
     idx1, idx2 = random.sample(range(len(representation)), 2)
     r = representation
     r[idx1], r[idx2] = r[idx2], r[idx1]
+    return r
 
+def inversion_mutation(representation: list) -> list:
+    idx1, idx2 = sorted(random.sample(range(len(representation)), 2))
+    r = representation
+    r[idx1:idx2] = r[idx1:idx2][::-1]
     return r

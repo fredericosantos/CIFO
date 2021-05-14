@@ -29,16 +29,13 @@ class BasePopulation:
     def neighbours(self):
         pass
 
-    def selection(self, func, *args, **kwargs) -> None:
-        func(self, *args, **kwargs)
+    def selection(self):
+        pass
 
-    def crossover(self, func, *args, **kwargs) -> None:
-        func(self, *args, **kwargs)
+    def crossover(self):
+        pass
 
-    def mutation(self, func, *args, **kwargs) -> None:
-        func(self, *args, **kwargs)
-
-    def evolve(self) -> None:
+    def mutation(self):
         pass
 
 

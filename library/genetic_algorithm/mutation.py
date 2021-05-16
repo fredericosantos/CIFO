@@ -9,25 +9,29 @@ def gene_mutation(representation: list, p_mutation: float, valid_set: list) -> l
     return representation
 
 
-def single_mutation(representation: list, valid_set: list) -> list:
-    # get random point in representation
-    idx = random.randint(0, len(representation) - 1)
-    # copy valid set of values and make sure we don't get the same value
-    valid_set_c = valid_set.copy()
-    valid_set_c.remove(representation[idx])
+def single_mutation(representation: list, p_mutation: float, valid_set: list) -> list:
+    if random.random() <= p_mutation:
+        # get random point in representation
+        idx = random.randint(0, len(representation) - 1)
+        # copy valid set of values and make sure we don't get the same value
+        valid_set_c = valid_set.copy()
+        valid_set_c.remove(representation[idx])
 
-    # change the representation point
-    representation[idx] = random.choice(valid_set_c)
+        # change the representation point
+        representation[idx] = random.choice(valid_set_c)
     return representation
 
 def swap_mutation(representation: list, p_mutation: float, n_mutations: int) -> list:
-    idx1, idx2 = random.sample(range(len(representation)), 2)
     r = representation
-    r[idx1], r[idx2] = r[idx2], r[idx1]
+    for _ in range(n_mutations):
+        if random.random() <= p_mutation:
+            idx1, idx2 = random.sample(range(len(r)), 2)
+            r[idx1], r[idx2] = r[idx2], r[idx1]
     return r
 
-def inversion_mutation(representation: list) -> list:
-    idx1, idx2 = sorted(random.sample(range(len(representation)), 2))
+def inversion_mutation(representation: list, p_mutation: float) -> list:
     r = representation
-    r[idx1:idx2] = r[idx1:idx2][::-1]
+    if random.random() <= p_mutation:
+        idx1, idx2 = sorted(random.sample(range(len(r)), 2))
+        r[idx1:idx2] = r[idx1:idx2][::-1]
     return r

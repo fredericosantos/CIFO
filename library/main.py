@@ -1,3 +1,4 @@
+from typing import Any
 import numpy as np
 
 
@@ -5,7 +6,13 @@ class BasePopulation:
     """Population for optimization
     """
 
-    def __init__(self, individuals: list, optimization: str, n_elites: int = 0, valid_set: list = None):
+    def __init__(
+        self,
+        individuals: list,
+        optimization: str,
+        n_elites: int = 0,
+        valid_set: list = None,
+    ):
         """Args:
             individuals (list): List of Individual
             optimization (str): max or min
@@ -42,16 +49,11 @@ class BasePopulation:
 class Individual:
     def __init__(self, representation: list) -> None:
         self.representation = representation
-        self.fitness = None
-        self.neighbours = None
+        self.fitness: Any = None
+        self.neighbours = []
 
     def __len__(self):
         return len(self.representation)
 
     def __repr__(self):
         return f"Individual <{self.fitness}>"
-
-
-# TODO create function that generates a population with abstract code
-def generatePopulation() -> BasePopulation:
-    pass
